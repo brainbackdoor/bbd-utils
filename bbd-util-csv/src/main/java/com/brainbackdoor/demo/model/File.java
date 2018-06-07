@@ -1,11 +1,12 @@
 package com.brainbackdoor.demo.model;
 
 import com.brainbackdoor.demo.exception.NoEntityFoundException;
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.io.*;
 import java.util.List;
@@ -37,7 +38,14 @@ public class File {
                 .readAll();
     }
 
+    public List<String[]> read() throws IOException {
+        MappingIterator<String[]> reader = new CsvMapper().enable(CsvParser.Feature.WRAP_AS_ARRAY)
+                .reader(String[].class).with(CsvSchema.emptySchema().withSkipFirstDataRow(true))
+                .readValues(new BufferedReader(new InputStreamReader(new FileInputStream(path + name), "utf-8")));
+        return reader.readAll();
+    }
+
     private void isValid(List<Map> cells) {
-        cells.stream().findFirst().orElseThrow(() -> new NoEntityFoundException("There is no data in CSV."));
+        cells.stream().findAny().orElseThrow(() -> new NoEntityFoundException("There is no data in CSV."));
     }
 }

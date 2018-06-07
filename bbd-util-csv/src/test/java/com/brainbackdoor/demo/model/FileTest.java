@@ -1,16 +1,12 @@
 package com.brainbackdoor.demo.model;
 
+import com.brainbackdoor.demo.exception.NoEntityFoundException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import java.util.*;
 
 public class FileTest {
     private static final Logger log = LoggerFactory.getLogger(FileTest.class);
@@ -40,13 +36,16 @@ public class FileTest {
         log.debug("{}", file.read(Temp.class));
     }
 
-    @Test
+    @Test(expected = NoEntityFoundException.class)
     public void EmptyFileVerificationTest() throws IOException {
         file.write(new CsvTemplate(Temp.class.getDeclaredFields()).makeSchema(), new ArrayList());
     }
 
+    @Test
+    public void ReadCsvFileNoSchemeTest() throws IOException {
+        file.read().stream().forEach(lines -> Arrays.stream(lines).forEach(v -> log.debug("{}", v)));
+    }
 }
-
 
 class Temp {
     String temp1;
