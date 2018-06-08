@@ -1,18 +1,23 @@
 package com.brainbackdoor.demo.model;
 
 import com.brainbackdoor.demo.exception.NoEntityFoundException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class FileTest {
     private static final Logger log = LoggerFactory.getLogger(FileTest.class);
 
-    private String fileName = "test.csv";
-    private String savePath = "C:\\Users\\brainbackdoor\\Desktop\\";
+    private String fileName = "sample1.csv";
+    private String savePath = "C:\\Users\\Echo\\Desktop\\";
 
     File file = new File(savePath, fileName);
 
@@ -39,11 +44,6 @@ public class FileTest {
     @Test(expected = NoEntityFoundException.class)
     public void EmptyFileVerificationTest() throws IOException {
         file.write(new CsvTemplate(Temp.class.getDeclaredFields()).makeSchema(), new ArrayList());
-    }
-
-    @Test
-    public void ReadCsvFileNoSchemeTest() throws IOException {
-        file.read().stream().forEach(lines -> Arrays.stream(lines).forEach(v -> log.debug("{}", v)));
     }
 }
 

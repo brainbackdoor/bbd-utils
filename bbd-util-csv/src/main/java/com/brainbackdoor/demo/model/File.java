@@ -40,7 +40,7 @@ public class File {
 
     public List<String[]> read() throws IOException {
         MappingIterator<String[]> reader = new CsvMapper().enable(CsvParser.Feature.WRAP_AS_ARRAY)
-                .reader(String[].class).with(CsvSchema.emptySchema().withSkipFirstDataRow(true))
+                .reader(String[].class)
                 .readValues(new BufferedReader(new InputStreamReader(new FileInputStream(path + name), "utf-8")));
         return reader.readAll();
     }
